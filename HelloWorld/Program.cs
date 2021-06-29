@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
-using System.Collections.Generic;
 
 namespace HelloWorld
 {
@@ -13,9 +13,9 @@ namespace HelloWorld
         private String surName;
         private String fullName;
         private String givenName;
-        public static bool IsValidName(String name)
+        public bool IsValidName()
         {
-            string[] words = name.Split(' ');
+            string[] words = fullName.Split(' ');
             if (words.Length < 2) return false;
             if (words.Length > 4) return false;
             return true;
@@ -46,21 +46,21 @@ namespace HelloWorld
         }
     }
     class NameListSorter {
-        private List<FullName> names;
-        public NameListSorter(String fileName)
+        private FullName [] names;
+        public NameListSorter(FullName [] names)
         {
-            names = new List<FullName>();
-            StreamReader reader = new StreamReader(fileName);
-            String name;
-            while ((name = reader.ReadLine()) != null)
-            {
-
-                names.Add(new FullName(name));
-            }
+            this.names = names;
         }
-        public void SortNames()
+        public void SortNames() 
         {
-            names.Sort();
+            if (!(this.IsValidList()))
+             {
+                throw new Exception("This file contains invalid names," +
+                                     "a valid name comprises of a surname and 1 to 3 given names "); 
+            }
+            Array.Sort(names);
+            this.PrintNames();
+            this.PrintNamestoFile();
         }
         public void PrintNames()
         {
@@ -69,20 +69,18 @@ namespace HelloWorld
         }
         public void PrintNamestoFile()
         {
-            StreamWriter writer = new StreamWriter("sorted-names.txt");
+            StreamWriter writer = new StreamWriter("sorted-names-list.txt");
             foreach (FullName name in names)
             {
                 writer.WriteLine(name.GetName());
             }
             writer.Close();
         }
-        public static bool IsValidList(String fileName)
+        public bool IsValidList()
         {
-            StreamReader reader = new StreamReader(fileName);
-            String name;
-            while ((name = reader.ReadLine()) != null)
+            foreach(FullName name in names)
             {
-                if (!( FullName.IsValidName(name)))
+                if (!( name.IsValidName()))
                 {
                     Console.WriteLine(name);
                     return false;
@@ -97,19 +95,27 @@ namespace HelloWorld
     {
         static void Main(string[] args)
         {
+           if(args.Length == 0)
+            {
+                Console.WriteLine("Missing File Name in the arguments");
+                return;
+            }
             String file = args[0];
             if (File.Exists(file))
             {
-                if (!(NameListSorter.IsValidList(file)))
+                FullName [] names =
+                    File.ReadAllLines(file)
+                        .Select(line => new FullName(line)).ToArray();
+                    NameListSorter sorter = new NameListSorter(names);
+                try
                 {
-                   Console.WriteLine("This is not a valid Name list file") ;
-                }
-                else {
-                    NameListSorter sorter = new NameListSorter(file);
                     sorter.SortNames();
-                    sorter.PrintNames();
-                    sorter.PrintNamestoFile();
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+ 
             }
             else
             {
