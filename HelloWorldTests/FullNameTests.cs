@@ -10,51 +10,51 @@ namespace HelloWorld.Tests
     public class FullNameTests
     {
         [TestMethod()]
-        public void BlankNameNotValid()
+        public void blank_Name_Not_Valid()
         {
             Assert.AreEqual((new FullName("")).IsValidName(), false);
 
         }
 
         [TestMethod()]
-        public void OneWordNameNotValid()
+        public void one_Word_Name_Not_Valid()
         {
             Assert.AreEqual((new FullName("Nooshin")).IsValidName(), false);
         }
 
         [TestMethod()]
-        public void ThreeWordNameisValid()
+        public void three_Word_Name_is_Valid()
         {
             Assert.AreEqual((new FullName("Nooshin Fallahpour Sichani")).IsValidName(), true);
         }
         [TestMethod()]
-        public void TwoWordNameisValid()
+        public void two_Word_Name_is_Valid()
         {
             Assert.AreEqual((new FullName("Nooshin Sichani")).IsValidName(), true);
         }
 
         [TestMethod()]
-        public void FourWordNameisValid()
+        public void four_Word_Name_is_Valid()
         {
             Assert.AreEqual((new FullName("Nooshin Fallahpour Sichani Yazdi")).IsValidName(), true);
         }
 
         [TestMethod()]
-        public void FiveWordNameNotValid()
+        public void five_Word_Name_Not_Valid()
         {
             Assert.AreEqual((new FullName("Nooshin Fallahpour Sichani Yazdi Asl")).IsValidName(), false);
         }
         [TestMethod()]
-        public void CompareSameNames()
+        public void Jane_Doe_is_exact_match_for_Jane_Doe()
         {
-            Assert.AreEqual((new FullName("Nooshin Sichani"))
-                .CompareTo((new FullName("Nooshin Sichani"))), 0);
+            Assert.AreEqual((new FullName("Jane Doe"))
+                .CompareTo((new FullName("Jane Doe"))), 0);
         }
         [TestMethod()]
-        public void CompareSameSurNames()
+        public void John_Doe_is_after_Jane_Doe()
         {
-            Assert.AreEqual((new FullName("Nooshin Sichani"))
-                .CompareTo((new FullName("Negar Sichani"))), 1);
+            Assert.AreEqual((new FullName("John Doe"))
+                .CompareTo((new FullName("Jane Doe"))), 1);
         }
     }
 }
