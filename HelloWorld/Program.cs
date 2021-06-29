@@ -7,6 +7,7 @@ namespace HelloWorld
     /* Class FullName
      * Separates FullName to First name , Middle Names and a Surname
      * Overrides CompareTo method to compare full names based on Surnames first
+     * and then based on given names
     */
     public class FullName : IComparable
     {
