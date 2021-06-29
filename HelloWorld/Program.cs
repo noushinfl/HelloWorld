@@ -8,6 +8,7 @@ namespace HelloWorld
      * Separates FullName to First name , Middle Names and a Surname
      * Overrides CompareTo method to compare full names based on Surnames first
      * and then based on given names
+     * A valid name must have at least one and up to 3 given names and one surname
     */
     public class FullName : IComparable
     {
