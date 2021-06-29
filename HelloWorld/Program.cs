@@ -4,15 +4,32 @@ using System.Collections.Generic;
 
 namespace HelloWorld
 {
+    /* Class FullName
+     * Separates FullName to First name , Middle Names and a Surname
+     * Overrides CompareTo method to compare full names based on Surnames first
+    */
     public class FullName : IComparable
     {
         private String surName;
         private String fullName;
+        private String givenName;
+        public static bool IsValidName(String name)
+        {
+            string[] words = name.Split(' ');
+            if (words.Length < 2) return false;
+            if (words.Length > 4) return false;
+            return true;
+        }
         public FullName(String name)
         {
             fullName = name;
             string[] words = name.Split(' ');
             surName = words[words.Length - 1];
+            surName.ToUpper();
+            surName.Trim();
+            foreach(String w in words)
+               givenName = String.Concat(givenName,w);
+            givenName.ToUpper();
         }
         public String GetName()
         {
@@ -22,12 +39,15 @@ namespace HelloWorld
         {
             if (obj == null) return 1;
             FullName otherName = (FullName)obj;
-            return String.Compare(this.surName, otherName.surName);
+            int surNameCompare;
+            if((surNameCompare = String.Compare(this.surName, otherName.surName)) != 0 )
+                return surNameCompare;
+            return String.Compare(this.givenName, otherName.givenName);
         }
     }
-    class NameSorter {
+    class NameListSorter {
         private List<FullName> names;
-        public NameSorter(String fileName)
+        public NameListSorter(String fileName)
         {
             names = new List<FullName>();
             StreamReader reader = new StreamReader(fileName);
@@ -50,10 +70,26 @@ namespace HelloWorld
         public void PrintNamestoFile()
         {
             StreamWriter writer = new StreamWriter("sorted-names.txt");
-           foreach (FullName name in names)
+            foreach (FullName name in names)
             {
                 writer.WriteLine(name.GetName());
-            }             
+            }
+            writer.Close();
+        }
+        public static bool IsValidList(String fileName)
+        {
+            StreamReader reader = new StreamReader(fileName);
+            String name;
+            while ((name = reader.ReadLine()) != null)
+            {
+                if (!( FullName.IsValidName(name)))
+                {
+                    Console.WriteLine(name);
+                    return false;
+                }
+
+            }
+            return true;
         }
     }
 
@@ -64,14 +100,21 @@ namespace HelloWorld
             String file = args[0];
             if (File.Exists(file))
             {
-                NameSorter sorter = new NameSorter(file);
-                sorter.SortNames();
-                sorter.PrintNames();
-                sorter.PrintNamestoFile();
+                if (!(NameListSorter.IsValidList(file)))
+                {
+                   Console.WriteLine("This is not a valid Name list file") ;
+                }
+                else {
+                    NameListSorter sorter = new NameListSorter(file);
+                    sorter.SortNames();
+                    sorter.PrintNames();
+                    sorter.PrintNamestoFile();
+                }
             }
             else
             {
                 Console.WriteLine("File does not exist in the current directory!");
+                Console.WriteLine("Current Direcotry is :" + Path.GetFullPath("."));
             }
         }
     }
