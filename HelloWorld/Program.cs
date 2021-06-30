@@ -105,6 +105,7 @@ namespace HelloWorld
             String file = args[0];
             if (File.Exists(file))
             {
+                // Read file into an array of FullNames
                 FullName [] names =
                     File.ReadAllLines(file)
                         .Select(line => new FullName(line)).ToArray();
